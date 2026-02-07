@@ -1,0 +1,11 @@
+---
+format:
+  revealjs: 
+    theme: [default, styles.scss]
+    include-after-body: 
+      - "all-the-js-code.html"
+---
+
+::: {.fragment .fade-in-then-out}
+
+:::

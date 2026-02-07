@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:quarto.org)",
+      "Bash(npm run compile:*)",
+      "Bash(node -e:*)"
+    ]
+  }
+}

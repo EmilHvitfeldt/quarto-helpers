@@ -1,0 +1,42 @@
+{
+  "name": "quarto-slidecrafting",
+  "displayName": "Quarto Slidecrafting",
+  "description": "VS Code extension for Quarto slidecrafting",
+  "version": "0.0.1",
+  "publisher": "EmilHvitfeldt",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:quarto"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "quarto",
+        "extensions": [
+          ".qmd"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "publish:ovsx": "ovsx publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.x",
+    "typescript": "^5.x"
+  }
+}

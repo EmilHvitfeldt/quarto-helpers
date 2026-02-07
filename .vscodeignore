@@ -1,0 +1,16 @@
+.vscode/**
+.vscode-test/**
+.github/**
+node_modules/**
+dist/**
+*.log
+src/**
+tsconfig.json
+.eslintrc.json
+.prettierrc
+CHANGELOG.md
+CONTRIBUTING.md
+examples/**
+.git/**
+.gitignore
+package-lock.json
