@@ -17,7 +17,9 @@ export function findFragmentClasses(cssFilePath: string): string[] {
     // Match patterns like:
     // .reveal .fragment.fade-out
     // .reveal .slides section .fragment.highlight-red
-    const fragmentRegex = /\.reveal\s+(?:\.slides\s+section\s+)?\.fragment\.([a-zA-Z0-9_-]+)/g;
+    // .reveal .something .fragment.grow
+    // More flexible: matches .reveal followed by anything, then .fragment.classname
+    const fragmentRegex = /\.reveal\b[^{]*\.fragment\.([a-zA-Z0-9_-]+)/g;
 
     const classes = new Set<string>();
     let match: RegExpExecArray | null;
