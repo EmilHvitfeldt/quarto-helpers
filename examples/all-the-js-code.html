@@ -1,3 +1,17 @@
 <script type="text/javascript">
+  Reveal.on("fragmentshown", (event) => {
+    if (event.fragment.classList.contains("randomcolor")) {
+      random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
 
+      Reveal.getCurrentSlide().querySelector("h2").style.color = random_color;
+    }
+  });
+
+  Reveal.on("fragmenthidden", (event) => {
+    if (event.fragment.classList.contains("randomcolor")) {
+      color = event.fragment.dataset.color;
+
+      Reveal.getCurrentSlide().querySelector("h2").style.color = color;
+    }
+  });
 </script>

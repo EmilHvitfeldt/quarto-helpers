@@ -6,7 +6,7 @@
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.25">
 
   <title>index</title>
@@ -28,7 +28,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-bbca2bfeb3d30cf0db0e12a99d4961d0.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-7567bc2714631e570a06cef3da33d88c.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -121,14 +121,14 @@
     }
   </style>
 </head>
-<body class="quarto-dark">
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 
-<section class="slide level2">
-
-<div class="fragment fade-in-then-out">
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<div class="fragment">
 
 </div>
 
@@ -349,7 +349,21 @@
       });
     </script>
     <script type="text/javascript">
+      Reveal.on("fragmentshown", (event) => {
+        if (event.fragment.classList.contains("randomcolor")) {
+          random_color = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
 
+          Reveal.getCurrentSlide().querySelector("h2").style.color = random_color;
+        }
+      });
+
+      Reveal.on("fragmenthidden", (event) => {
+        if (event.fragment.classList.contains("randomcolor")) {
+          color = event.fragment.dataset.color;
+
+          Reveal.getCurrentSlide().querySelector("h2").style.color = color;
+        }
+      });
     </script>
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {

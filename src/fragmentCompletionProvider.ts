@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { parseCssLinks } from './cssLinkParser';
 import { findFragmentClassesFromFiles } from './fragmentFinder';
+import { findJsFragmentClasses } from './jsFragmentFinder';
 
 /**
  * Cache entry for fragment classes per HTML file.
@@ -75,6 +76,7 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
 
   /**
    * Get fragment classes with caching to avoid repeated file I/O.
+   * Combines classes from CSS files and JavaScript-defined custom fragments.
    */
   private getFragmentClasses(htmlPath: string): string[] {
     const now = Date.now();
@@ -85,15 +87,27 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
       return cached.fragmentClasses;
     }
 
-    // Parse CSS links from the HTML file
+    const allClasses = new Set<string>();
+
+    // Find fragment classes from CSS files
     const cssFiles = parseCssLinks(htmlPath);
-    if (cssFiles.length === 0) {
-      return [];
+    if (cssFiles.length > 0) {
+      const cssClasses = findFragmentClassesFromFiles(cssFiles);
+      for (const cls of cssClasses) {
+        allClasses.add(cls);
+      }
     }
 
-    // Find all fragment classes from the CSS files
-    const fragmentClasses = findFragmentClassesFromFiles(cssFiles)
-      .filter(cls => !FragmentCompletionProvider.EXCLUDED_CLASSES.has(cls));
+    // Find custom fragment classes defined in JavaScript
+    const jsClasses = findJsFragmentClasses(htmlPath);
+    for (const cls of jsClasses) {
+      allClasses.add(cls);
+    }
+
+    // Filter excluded classes and sort
+    const fragmentClasses = Array.from(allClasses)
+      .filter(cls => !FragmentCompletionProvider.EXCLUDED_CLASSES.has(cls))
+      .sort();
 
     // Cache the result
     this.cache.set(htmlPath, {
