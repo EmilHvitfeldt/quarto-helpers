@@ -10,3 +10,5 @@ format:
 
 ::: {.fragment .randomcolor}
 :::
+
+{{< includes  >}}

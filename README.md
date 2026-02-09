@@ -70,6 +70,43 @@ $h1-font-size: 2.75rem;
 
 ---
 
+### Include Shortcode Autocomplete
+
+Provides file path autocomplete inside `{{< include >}}` shortcodes, making it easy to include content from other files in your Quarto documents.
+
+#### How It Works
+
+Type `{{< include ` and trigger autocomplete (or press space) to get suggestions for all files in your workspace:
+
+<!-- TODO: Add gif showing include autocomplete -->
+
+#### Features
+
+- **Relative paths**: File paths are shown relative to your current document
+- **All files**: Every file in your workspace is available for inclusion
+- **Smart sorting**: Underscore-prefixed files (like `_content.qmd`) appear first, following Quarto's convention for include files
+- **Filtered directories**: Common non-content directories are excluded (`.git`, `node_modules`, `_site`, `_freeze`, `.quarto`, etc.)
+
+#### Why Underscore Prefix?
+
+Quarto recommends prefixing include files with an underscore (e.g., `_chapter1.qmd`) because:
+- They are automatically ignored during project rendering
+- It clearly identifies them as partial content meant for inclusion
+
+**Examples:**
+
+```markdown
+{{< include _abstract.qmd >}}
+
+{{< include sections/_introduction.qmd >}}
+
+{{< include ../_shared/common-setup.qmd >}}
+```
+
+See `examples/include-shortcode/` for a working example.
+
+---
+
 ### Fragment Autocomplete
 
 Provides intelligent autocomplete for reveal.js fragment animation types inside `{.fragment }` spans.

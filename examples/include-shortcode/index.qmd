@@ -1,0 +1,20 @@
+---
+title: "Include Shortcode Example"
+format: html
+---
+
+## Introduction
+
+This document demonstrates the include shortcode autocomplete feature.
+
+{{< include _abstract.qmd >}}
+
+## Main Content
+
+The content below is included from a separate file:
+
+{{< include _methods.qmd >}}
+
+## Conclusion
+
+{{< include _conclusion.qmd >}}

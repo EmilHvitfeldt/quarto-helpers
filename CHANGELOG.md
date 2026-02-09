@@ -30,3 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - RevealJS variables: 59 variables including presentation-specific settings
   - HTML variables: 26 variables for standard HTML documents
   - Dashboard variables: 55 variables including value boxes, cards, and sidebar
+- **Include shortcode autocomplete:**
+  - Autocomplete for file paths inside `{{< include >}}` shortcodes
+  - Lists all files in the workspace with relative paths from the current document
+  - Prioritizes underscore-prefixed files (Quarto convention for include files)
+  - Excludes common non-content directories (`.git`, `node_modules`, `_site`, etc.)
+  - 5-second caching for performance

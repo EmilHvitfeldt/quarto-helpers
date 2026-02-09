@@ -1,0 +1,3 @@
+### Abstract
+
+This is an abstract included from `_abstract.qmd`. Using underscore-prefixed files ensures they won't be rendered as standalone documents when building your Quarto project.

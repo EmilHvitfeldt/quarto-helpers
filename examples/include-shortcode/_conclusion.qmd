@@ -1,0 +1,5 @@
+### Conclusion
+
+This conclusion is included from `_conclusion.qmd`.
+
+The include shortcode autocomplete feature helps you quickly find and insert file paths without having to remember exact paths or navigate through your file explorer.

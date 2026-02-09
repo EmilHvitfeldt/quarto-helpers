@@ -1,0 +1,13 @@
+### Methods
+
+This methods section is included from `_methods.qmd`.
+
+1. Step one of the methodology
+2. Step two of the methodology
+3. Step three of the methodology
+
+The include shortcode makes it easy to:
+
+- Reuse content across multiple documents
+- Keep large documents organized
+- Collaborate on different sections separately
