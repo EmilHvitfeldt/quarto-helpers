@@ -1,7 +1,7 @@
 {
-  "name": "quarto-slidecrafting",
-  "displayName": "Quarto Slidecrafting",
-  "description": "VS Code extension for Quarto slidecrafting",
+  "name": "quarto-helpers",
+  "displayName": "Quarto Helpers",
+  "description": "VS Code extension for Quarto helpers",
   "version": "0.0.1",
   "publisher": "EmilHvitfeldt",
   "engines": {

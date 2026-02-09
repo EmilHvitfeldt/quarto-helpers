@@ -1,4 +1,4 @@
-# Quarto Slidecrafting
+# Quarto Helpers
 
 VS Code extension providing autocomplete and editor support for Quarto reveal.js presentations.
 
@@ -65,7 +65,7 @@ This will grow
 
 1. Open VS Code
 2. Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
-3. Search for "Quarto Slidecrafting"
+3. Search for "Quarto Helpers"
 4. Click Install
 
 ## How It Works
@@ -84,8 +84,8 @@ The extension reads the rendered HTML file corresponding to your `.qmd` file to 
 ### Setup
 
 ```bash
-git clone https://github.com/EmilHvitfeldt/quarto-slidecrafting.git
-cd quarto-slidecrafting
+git clone https://github.com/EmilHvitfeldt/quarto-helpers.git
+cd quarto-helpers
 npm install
 ```
 
@@ -123,7 +123,7 @@ See the [VS Code Publishing Guide](https://code.visualstudio.com/api/working-wit
 1. Install ovsx if needed: `npm install -g ovsx`
 2. Get an access token from [Open VSX](https://open-vsx.org/)
 3. Run `npm run package` to create the `.vsix` file
-4. Publish: `ovsx publish quarto-slidecrafting-0.1.0.vsix -p <token>`
+4. Publish: `ovsx publish quarto-helpers-0.1.0.vsix -p <token>`
 
 See the [Open VSX Wiki](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions) for more details.
 
