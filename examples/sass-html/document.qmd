@@ -1,0 +1,14 @@
+---
+title: "Example HTML Document"
+format:
+  html:
+    theme: [cosmo, custom.scss]
+---
+
+## Introduction
+
+This is an example HTML document with custom styling.
+
+## Content
+
+The `custom.scss` file will get HTML-specific Sass variable completions.

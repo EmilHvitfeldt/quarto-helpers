@@ -1,0 +1,14 @@
+---
+title: "Example Presentation"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+---
+
+## Slide 1
+
+This is an example RevealJS presentation.
+
+## Slide 2
+
+The `custom.scss` file will get RevealJS-specific Sass variable completions.

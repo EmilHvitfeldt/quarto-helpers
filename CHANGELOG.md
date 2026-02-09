@@ -20,3 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Caches fragment classes for 5 seconds to improve performance
   - Multi-line brace support for complex span definitions
   - Limits to one fragment animation class per element
+- **Sass variable autocomplete:**
+  - Autocomplete for Quarto Sass variables in `.scss` files
+  - Format-aware completions: automatically detects RevealJS, HTML, or Dashboard format
+  - Scans workspace for `.qmd` and `_quarto.yml` files to determine format
+  - Supports multi-format SCSS files (combines variables from all detected formats)
+  - Variables organized by category (colors, fonts, headings, code, layout, callouts, etc.)
+  - Includes default values in completion documentation
+  - RevealJS variables: 59 variables including presentation-specific settings
+  - HTML variables: 26 variables for standard HTML documents
+  - Dashboard variables: 55 variables including value boxes, cards, and sidebar

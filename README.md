@@ -1,8 +1,74 @@
 # Quarto Helpers
 
-VS Code extension providing autocomplete and editor support for Quarto reveal.js presentations.
+VS Code extension providing autocomplete and editor support for Quarto documents.
 
 ## Features
+
+### Sass Variable Autocomplete
+
+Provides intelligent autocomplete for Quarto Sass variables in `.scss` files. The extension automatically detects which Quarto format (RevealJS, HTML, or Dashboard) your SCSS file is used with and provides format-specific variable suggestions.
+
+#### How It Works
+
+Type `$` in any `.scss` file within a Quarto project to get suggestions for available Sass variables:
+
+<!-- TODO: Add gif showing sass autocomplete -->
+
+#### Format-Aware Completions
+
+The extension scans your workspace for `.qmd` files and `_quarto.yml` to detect which format references your SCSS file:
+
+- **RevealJS presentations**: Get variables like `$presentation-font-size-root`, `$presentation-h1-font-size`, `$body-bg`
+- **HTML documents**: Get variables like `$h1-font-size`, `$body-color`, `$link-color`
+- **Dashboards**: Get variables like `$valuebox-bg-primary`, `$card-border-radius`, `$bslib-sidebar-width`
+
+If an SCSS file is used by multiple formats, variables from all formats are combined.
+
+#### Variable Categories
+
+Variables are organized by category:
+- **colors**: Background, text, and link colors
+- **fonts**: Font families and sizes
+- **headings**: Heading sizes and styles
+- **code**: Code block styling
+- **layout**: Borders, spacing, and alignment
+- **callouts**: Callout box colors
+- **value-box**: Dashboard value box colors (dashboard only)
+- **cards**: Card styling (dashboard only)
+- **sidebar**: Sidebar styling (dashboard only)
+
+**Examples:**
+
+RevealJS (`examples/sass-revealjs/custom.scss`):
+```scss
+/*-- scss:defaults --*/
+
+$body-bg: #1a1a2e;
+$body-color: #eaeaea;
+$presentation-font-size-root: 42px;
+$presentation-heading-color: #ffffff;
+```
+
+Dashboard (`examples/sass-dashboard/custom.scss`):
+```scss
+/*-- scss:defaults --*/
+
+$primary: #4a90d9;
+$valuebox-bg-primary: $primary;
+$card-border-radius: 0.5rem;
+$bslib-sidebar-width: 300px;
+```
+
+HTML (`examples/sass-html/custom.scss`):
+```scss
+/*-- scss:defaults --*/
+
+$body-bg: #fafafa;
+$link-color: #0066cc;
+$h1-font-size: 2.75rem;
+```
+
+---
 
 ### Fragment Autocomplete
 

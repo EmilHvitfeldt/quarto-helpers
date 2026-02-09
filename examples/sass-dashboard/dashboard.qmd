@@ -1,0 +1,20 @@
+---
+title: "Example Dashboard"
+format:
+  dashboard:
+    theme: [cosmo, custom.scss]
+---
+
+## Row
+
+```{r}
+#| content: valuebox
+#| title: "Value 1"
+list(value = 42)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Value 2"
+list(value = 100)
+```
