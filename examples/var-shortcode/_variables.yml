@@ -1,0 +1,12 @@
+version: 1.2.0
+product:
+  name: Quarto Helpers
+  description: VS Code extension for Quarto documents
+author:
+  name: Emil Hvitfeldt
+  email: emilhhvitfeldt@gmail.com
+  github: EmilHvitfeldt
+urls:
+  homepage: https://github.com/EmilHvitfeldt/quarto-helpers
+  docs: https://github.com/EmilHvitfeldt/quarto-helpers#readme
+  issues: https://github.com/EmilHvitfeldt/quarto-helpers/issues

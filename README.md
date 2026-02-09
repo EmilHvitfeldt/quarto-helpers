@@ -107,6 +107,69 @@ See `examples/include-shortcode/` for a working example.
 
 ---
 
+### Var Shortcode Autocomplete
+
+Provides autocomplete for Quarto's `{{< var >}}` shortcode, which reads variables from `_variables.yml` files in your project. Type `{{< var ` to get suggestions:
+
+<!-- TODO: Add gif showing var autocomplete -->
+
+The extension scans all `_variables.yml` files in your workspace and suggests available variables with dot notation for nested values.
+
+**Example `_variables.yml`:**
+```yaml
+version: 1.0.0
+author:
+  name: Jane Doe
+  email: jane@example.com
+urls:
+  docs: https://example.com/docs
+  support: https://example.com/support
+```
+
+**Usage:**
+```markdown
+Current version: {{< var version >}}
+
+Contact {{< var author.name >}} at {{< var author.email >}}
+
+See our [documentation]({{< var urls.docs >}}) for more info.
+```
+
+See `examples/var-shortcode/` for a working example.
+
+---
+
+### Meta Shortcode Autocomplete
+
+Provides autocomplete for Quarto's `{{< meta >}}` shortcode, which reads metadata from YAML front matter and `_quarto.yml` files. Type `{{< meta ` to get suggestions:
+
+<!-- TODO: Add gif showing meta autocomplete -->
+
+The extension parses:
+- The current document's YAML front matter
+- `_quarto.yml` files from the document's directory up to the workspace root
+
+**Example front matter:**
+```yaml
+---
+title: "My Document"
+author: "Jane Doe"
+date: 2024-01-15
+categories:
+  - tutorial
+  - quarto
+---
+```
+
+**Usage:**
+```markdown
+This document "{{< meta title >}}" was written by {{< meta author >}}.
+```
+
+See `examples/meta-shortcode/` for a working example.
+
+---
+
 ### Fragment Autocomplete
 
 Provides intelligent autocomplete for reveal.js fragment animation types inside `{.fragment }` spans.

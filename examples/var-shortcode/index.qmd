@@ -1,0 +1,33 @@
+---
+title: "Var Shortcode Example"
+format: html
+---
+
+## Using `{{< var >}}` Shortcode
+
+The `{{< var >}}` shortcode reads from `_variables.yml` files in your project.
+
+**Product Information:**
+
+- **Name:** {{< var product.name >}}
+- **Version:** {{< var version >}}
+- **Description:** {{< var product.description >}}
+
+**Author:**
+
+- **Name:** {{< var author.name >}}
+- **Email:** {{< var author.email >}}
+- **GitHub:** {{< var author.github >}}
+
+**Links:**
+
+- [Homepage]({{< var urls.homepage >}})
+- [Documentation]({{< var urls.docs >}})
+- [Report Issues]({{< var urls.issues >}})
+
+## Autocomplete Demo
+
+To try the autocomplete:
+
+1. Place your cursor after `{{< var ` and trigger autocomplete
+2. You'll see suggestions like `version`, `product.name`, `author.email`, etc.

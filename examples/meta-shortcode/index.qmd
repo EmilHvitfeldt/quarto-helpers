@@ -1,0 +1,36 @@
+---
+title: "Meta Shortcode Example"
+subtitle: "Demonstrating the meta shortcode"
+author: "Jane Doe"
+date: 2024-01-15
+format: html
+categories:
+  - tutorial
+  - quarto
+custom:
+  setting: enabled
+  level: advanced
+---
+
+## Using `{{< meta >}}` Shortcode
+
+The `{{< meta >}}` shortcode reads from YAML front matter and `_quarto.yml` files.
+
+**Document Metadata:**
+
+- **Title:** {{< meta title >}}
+- **Subtitle:** {{< meta subtitle >}}
+- **Author:** {{< meta author >}}
+- **Date:** {{< meta date >}}
+
+**Custom Settings:**
+
+- **Setting:** {{< meta custom.setting >}}
+- **Level:** {{< meta custom.level >}}
+
+## Autocomplete Demo
+
+To try the autocomplete:
+
+1. Place your cursor after `{{< meta ` and trigger autocomplete
+2. You'll see suggestions from this document's front matter like `title`, `author`, `custom.setting`, etc.

@@ -36,3 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prioritizes underscore-prefixed files (Quarto convention for include files)
   - Excludes common non-content directories (`.git`, `node_modules`, `_site`, etc.)
   - 5-second caching for performance
+- **Var shortcode autocomplete:**
+  - Autocomplete for `{{< var >}}` shortcode with variables from `_variables.yml` files
+  - Supports dot notation for nested values (e.g., `author.name`, `urls.docs`)
+  - Scans all `_variables.yml` files in the workspace
+  - 5-second caching for performance
+- **Meta shortcode autocomplete:**
+  - Autocomplete for `{{< meta >}}` shortcode with fields from YAML front matter and `_quarto.yml`
+  - Supports dot notation for nested values (e.g., `author.name`, `custom.setting`)
+  - Parses front matter and `_quarto.yml` hierarchy
+  - 5-second caching for performance
