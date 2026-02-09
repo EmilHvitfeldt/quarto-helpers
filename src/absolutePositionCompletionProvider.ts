@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getTextInsideBraces, hasClass } from './utils';
 
 /**
  * Attribute information for absolute positioning.
@@ -36,7 +37,7 @@ export class AbsolutePositionCompletionProvider implements vscode.CompletionItem
       return undefined;
     }
 
-    const { insideBraces, existingAttributes } = context;
+    const { existingAttributes } = context;
 
     // Filter out attributes that are already present
     const availableAttributes = AbsolutePositionCompletionProvider.ATTRIBUTES.filter(
@@ -58,13 +59,13 @@ export class AbsolutePositionCompletionProvider implements vscode.CompletionItem
     position: vscode.Position
   ): { insideBraces: string; existingAttributes: Set<string> } | null {
     // Get text inside braces
-    const insideBraces = this.getTextInsideBraces(document, position);
+    const insideBraces = getTextInsideBraces(document, position);
     if (insideBraces === null) {
       return null;
     }
 
     // Check if .absolute class is present
-    if (!/\.absolute(?:\s|$|\.)/.test(insideBraces)) {
+    if (!hasClass(insideBraces, 'absolute')) {
       return null;
     }
 
@@ -87,51 +88,12 @@ export class AbsolutePositionCompletionProvider implements vscode.CompletionItem
   }
 
   /**
-   * Get text inside the current brace block.
-   */
-  private getTextInsideBraces(document: vscode.TextDocument, position: vscode.Position): string | null {
-    let lineNum = position.line;
-    let charPos = position.character;
-
-    let textBeforeCursor = '';
-    let braceDepth = 0;
-
-    while (lineNum >= 0) {
-      const lineText = document.lineAt(lineNum).text;
-      const endChar = lineNum === position.line ? charPos : lineText.length;
-
-      for (let i = endChar - 1; i >= 0; i--) {
-        const char = lineText[i];
-
-        if (char === '}') {
-          braceDepth++;
-        } else if (char === '{') {
-          if (braceDepth === 0) {
-            const textOnThisLine = lineText.substring(i + 1, endChar);
-            return textOnThisLine + textBeforeCursor;
-          }
-          braceDepth--;
-        }
-      }
-
-      if (lineNum < position.line) {
-        textBeforeCursor = lineText + '\n' + textBeforeCursor;
-      }
-
-      lineNum--;
-    }
-
-    return null;
-  }
-
-  /**
    * Find attributes already present in the brace content.
    */
   private findExistingAttributes(content: string): Set<string> {
     const existing = new Set<string>();
 
     for (const attr of AbsolutePositionCompletionProvider.ATTRIBUTES) {
-      // Match attribute=value or attribute="value"
       const regex = new RegExp(`\\b${attr.name}\\s*=`);
       if (regex.test(content)) {
         existing.add(attr.name);

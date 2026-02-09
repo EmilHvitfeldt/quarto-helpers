@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
+import { traverseUpwards, safeReadFile } from './utils';
 import { parseYamlKeys, parseFrontMatter } from './yamlParser';
 
 /**
@@ -54,21 +54,12 @@ export class MetaShortcodeCompletionProvider implements vscode.CompletionItemPro
     const keys: string[] = [];
 
     // Find _quarto.yml files from document directory up to workspace root
-    let currentDir = path.dirname(documentPath);
-    while (currentDir.startsWith(workspacePath)) {
-      const quartoYmlPath = path.join(currentDir, '_quarto.yml');
-      if (fs.existsSync(quartoYmlPath)) {
-        try {
-          const content = fs.readFileSync(quartoYmlPath, 'utf-8');
-          keys.push(...parseYamlKeys(content));
-        } catch {
-          // Ignore read errors
-        }
+    for (const dir of traverseUpwards(documentPath, workspacePath)) {
+      const quartoYmlPath = path.join(dir, '_quarto.yml');
+      const content = safeReadFile(quartoYmlPath);
+      if (content) {
+        keys.push(...parseYamlKeys(content));
       }
-
-      const parentDir = path.dirname(currentDir);
-      if (parentDir === currentDir) break;
-      currentDir = parentDir;
     }
 
     return keys;

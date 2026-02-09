@@ -3,14 +3,7 @@ import * as path from 'path';
 import { parseCssLinks } from './cssLinkParser';
 import { findFragmentClassesFromFiles } from './fragmentFinder';
 import { findJsFragmentClasses } from './jsFragmentFinder';
-
-/**
- * Cache entry for fragment classes per HTML file.
- */
-interface CacheEntry {
-  fragmentClasses: string[];
-  timestamp: number;
-}
+import { CacheManager, getTextInsideBraces, escapeRegex } from './utils';
 
 /**
  * Provides autocompletion for Quarto reveal.js fragment types.
@@ -21,10 +14,7 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
   private static readonly EXCLUDED_CLASSES = new Set(['visible', 'current-visible', 'disabled']);
 
   // Cache for fragment classes, keyed by HTML file path
-  private cache = new Map<string, CacheEntry>();
-
-  // Cache TTL in milliseconds (5 seconds)
-  private static readonly CACHE_TTL = 5000;
+  private cache = new CacheManager<string[]>();
 
   provideCompletionItems(
     document: vscode.TextDocument,
@@ -43,7 +33,7 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
     }
 
     // Get text inside braces, supporting multi-line
-    const insideBraces = this.getTextInsideBraces(document, position);
+    const insideBraces = getTextInsideBraces(document, position);
     if (insideBraces === null) {
       return undefined;
     }
@@ -61,116 +51,48 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
       );
       item.insertText = `.${className}`;
       item.detail = 'Fragment animation type';
-      item.sortText = '!' + index.toString().padStart(3, '0'); // '!' sorts before letters
-      item.filterText = `.${className} fragment`; // Better matching
+      item.sortText = '!' + index.toString().padStart(3, '0');
+      item.filterText = `.${className} fragment`;
       if (index === 0) {
         item.preselect = true;
       }
       return item;
     });
 
-    // Return as CompletionList (isIncomplete=false doesn't suppress other providers,
-    // but we set it anyway for correctness since our list is complete)
     return new vscode.CompletionList(items, false);
   }
 
   /**
    * Get fragment classes with caching to avoid repeated file I/O.
-   * Combines classes from CSS files and JavaScript-defined custom fragments.
    */
   private getFragmentClasses(htmlPath: string): string[] {
-    const now = Date.now();
-    const cached = this.cache.get(htmlPath);
+    return this.cache.getOrCompute(htmlPath, () => {
+      const allClasses = new Set<string>();
 
-    // Return cached value if still valid
-    if (cached && (now - cached.timestamp) < FragmentCompletionProvider.CACHE_TTL) {
-      return cached.fragmentClasses;
-    }
-
-    const allClasses = new Set<string>();
-
-    // Find fragment classes from CSS files
-    const cssFiles = parseCssLinks(htmlPath);
-    if (cssFiles.length > 0) {
-      const cssClasses = findFragmentClassesFromFiles(cssFiles);
-      for (const cls of cssClasses) {
-        allClasses.add(cls);
-      }
-    }
-
-    // Find custom fragment classes defined in JavaScript
-    const jsClasses = findJsFragmentClasses(htmlPath);
-    for (const cls of jsClasses) {
-      allClasses.add(cls);
-    }
-
-    // Filter excluded classes and sort
-    const fragmentClasses = Array.from(allClasses)
-      .filter(cls => !FragmentCompletionProvider.EXCLUDED_CLASSES.has(cls))
-      .sort();
-
-    // Cache the result
-    this.cache.set(htmlPath, {
-      fragmentClasses,
-      timestamp: now
-    });
-
-    return fragmentClasses;
-  }
-
-  /**
-   * Get the text inside the current brace block, supporting multi-line braces.
-   * Returns null if not inside braces.
-   */
-  private getTextInsideBraces(document: vscode.TextDocument, position: vscode.Position): string | null {
-    // Start from current position and search backwards for opening brace
-    let lineNum = position.line;
-    let charPos = position.character;
-
-    // Collect text from cursor backwards
-    let textBeforeCursor = '';
-    let braceDepth = 0;
-    let foundOpenBrace = false;
-
-    while (lineNum >= 0) {
-      const lineText = document.lineAt(lineNum).text;
-      const endChar = lineNum === position.line ? charPos : lineText.length;
-
-      for (let i = endChar - 1; i >= 0; i--) {
-        const char = lineText[i];
-
-        if (char === '}') {
-          braceDepth++;
-        } else if (char === '{') {
-          if (braceDepth === 0) {
-            // Found our opening brace
-            foundOpenBrace = true;
-            // Return text after this brace
-            const textOnThisLine = lineText.substring(i + 1, endChar);
-            return textOnThisLine + textBeforeCursor;
-          }
-          braceDepth--;
+      // Find fragment classes from CSS files
+      const cssFiles = parseCssLinks(htmlPath);
+      if (cssFiles.length > 0) {
+        const cssClasses = findFragmentClassesFromFiles(cssFiles);
+        for (const cls of cssClasses) {
+          allClasses.add(cls);
         }
       }
 
-      // Add this line's content to our collected text (for multi-line support)
-      if (lineNum < position.line) {
-        textBeforeCursor = lineText + '\n' + textBeforeCursor;
+      // Find custom fragment classes defined in JavaScript
+      const jsClasses = findJsFragmentClasses(htmlPath);
+      for (const cls of jsClasses) {
+        allClasses.add(cls);
       }
 
-      lineNum--;
-    }
-
-    return foundOpenBrace ? textBeforeCursor : null;
+      // Filter excluded classes and sort
+      return Array.from(allClasses)
+        .filter(cls => !FragmentCompletionProvider.EXCLUDED_CLASSES.has(cls))
+        .sort();
+    });
   }
 
   /**
    * Check if the cursor is in a valid context for fragment completion.
-   * Valid contexts:
-   * - Inside curly braces `{...}`
-   * - After `.fragment` (as a complete class, not part of another word)
-   * - No fragment animation class already present (only one allowed)
-   * - Cursor is after a space or dot (ready for new class)
    */
   private isInFragmentContext(
     insideBraces: string,
@@ -178,22 +100,20 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
     document: vscode.TextDocument,
     position: vscode.Position
   ): boolean {
-    // Check if .fragment appears as a complete class (not .fragmentary, etc.)
-    // Match .fragment followed by whitespace, end of string, or another class
+    // Check if .fragment appears as a complete class
     if (!/\.fragment(?:\s|$|\.)/.test(insideBraces)) {
       return false;
     }
 
-    // Check if a fragment animation class is already present (only allow one)
-    // Use word boundary to avoid false positives (e.g., .fade matching .fade-out)
+    // Check if a fragment animation class is already present
     for (const fragmentClass of fragmentClasses) {
-      const regex = new RegExp(`\\.${this.escapeRegex(fragmentClass)}(?:\\s|$|\\}|\\.)`);
+      const regex = new RegExp(`\\.${escapeRegex(fragmentClass)}(?:\\s|$|\\}|\\.)`);
       if (regex.test(insideBraces)) {
         return false;
       }
     }
 
-    // Check if the cursor is after a space or dot (ready for a new class)
+    // Check if the cursor is after a space or dot
     const lineText = document.lineAt(position.line).text;
     const lastChar = lineText.substring(0, position.character).slice(-1);
 
@@ -201,15 +121,7 @@ export class FragmentCompletionProvider implements vscode.CompletionItemProvider
   }
 
   /**
-   * Escape special regex characters in a string.
-   */
-  private escapeRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  /**
    * Get the corresponding HTML file path for a .qmd file.
-   * Assumes the HTML file is in the same directory with the same base name.
    */
   private getHtmlPath(qmdPath: string): string {
     const dir = path.dirname(qmdPath);

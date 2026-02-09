@@ -1,14 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
-
-/**
- * Cache entry for workspace files.
- */
-interface FileCacheEntry {
-  files: string[];
-  timestamp: number;
-}
+import { CacheManager, scanFiles, DEFAULT_IGNORE_DIRS } from './utils';
 
 /**
  * Provides autocompletion for Quarto include shortcodes.
@@ -16,22 +8,7 @@ interface FileCacheEntry {
  */
 export class IncludeShortcodeCompletionProvider implements vscode.CompletionItemProvider {
   // Cache for workspace files
-  private cache = new Map<string, FileCacheEntry>();
-
-  // Cache TTL in milliseconds (5 seconds)
-  private static readonly CACHE_TTL = 5000;
-
-  // Directories to ignore when scanning
-  private static readonly IGNORE_DIRS = new Set([
-    '.git',
-    'node_modules',
-    '_site',
-    '_freeze',
-    '.quarto',
-    'out',
-    '.vscode',
-    '.idea',
-  ]);
+  private cache = new CacheManager<string[]>();
 
   provideCompletionItems(
     document: vscode.TextDocument,
@@ -104,13 +81,7 @@ export class IncludeShortcodeCompletionProvider implements vscode.CompletionItem
       item.documentation = new vscode.MarkdownString(docText);
 
       // Sort underscore-prefixed files first (Quarto convention)
-      if (isUnderscoredFile) {
-        item.sortText = '!' + relativePath;
-      } else {
-        item.sortText = relativePath;
-      }
-
-      // Filter text for better matching
+      item.sortText = isUnderscoredFile ? '!' + relativePath : relativePath;
       item.filterText = relativePath + ' ' + fileName;
 
       items.push(item);
@@ -120,56 +91,11 @@ export class IncludeShortcodeCompletionProvider implements vscode.CompletionItem
   }
 
   /**
-   * Get all includable files in the workspace with caching.
+   * Get all files in the workspace with caching.
    */
   private getWorkspaceFiles(workspacePath: string): string[] {
-    const now = Date.now();
-    const cached = this.cache.get(workspacePath);
-
-    // Return cached value if still valid
-    if (cached && (now - cached.timestamp) < IncludeShortcodeCompletionProvider.CACHE_TTL) {
-      return cached.files;
-    }
-
-    const files = this.scanDirectory(workspacePath);
-
-    // Cache the result
-    this.cache.set(workspacePath, {
-      files,
-      timestamp: now,
+    return this.cache.getOrCompute(workspacePath, () => {
+      return scanFiles(workspacePath, { ignoreDirs: DEFAULT_IGNORE_DIRS });
     });
-
-    return files;
-  }
-
-  /**
-   * Recursively scan a directory for includable files.
-   */
-  private scanDirectory(dir: string): string[] {
-    const files: string[] = [];
-
-    const scan = (currentDir: string): void => {
-      let entries: fs.Dirent[];
-      try {
-        entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      } catch {
-        return;
-      }
-
-      for (const entry of entries) {
-        const fullPath = path.join(currentDir, entry.name);
-
-        if (entry.isDirectory()) {
-          if (!IncludeShortcodeCompletionProvider.IGNORE_DIRS.has(entry.name)) {
-            scan(fullPath);
-          }
-        } else if (entry.isFile()) {
-          files.push(fullPath);
-        }
-      }
-    };
-
-    scan(dir);
-    return files;
   }
 }

@@ -1,15 +1,6 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
+import { CacheManager, findFilesByName, safeReadFile, DEFAULT_IGNORE_DIRS } from './utils';
 import { parseYamlKeys } from './yamlParser';
-
-/**
- * Cache entry for variables.
- */
-interface CacheEntry {
-  variables: string[];
-  timestamp: number;
-}
 
 /**
  * Provides autocompletion for Quarto {{< var >}} shortcodes.
@@ -17,20 +8,7 @@ interface CacheEntry {
  */
 export class VarShortcodeCompletionProvider implements vscode.CompletionItemProvider {
   // Cache for variables
-  private cache = new Map<string, CacheEntry>();
-
-  // Cache TTL in milliseconds (5 seconds)
-  private static readonly CACHE_TTL = 5000;
-
-  // Directories to ignore when scanning
-  private static readonly IGNORE_DIRS = new Set([
-    '.git',
-    'node_modules',
-    '_site',
-    '_freeze',
-    '.quarto',
-    'out',
-  ]);
+  private cache = new CacheManager<string[]>();
 
   provideCompletionItems(
     document: vscode.TextDocument,
@@ -64,66 +42,21 @@ export class VarShortcodeCompletionProvider implements vscode.CompletionItemProv
    * Get variables from _variables.yml files with caching.
    */
   private getVariables(workspacePath: string): string[] {
-    const now = Date.now();
-    const cached = this.cache.get(workspacePath);
+    return this.cache.getOrCompute(workspacePath, () => {
+      const variables: string[] = [];
+      const variablesFiles = findFilesByName(workspacePath, '_variables.yml', DEFAULT_IGNORE_DIRS);
 
-    if (cached && (now - cached.timestamp) < VarShortcodeCompletionProvider.CACHE_TTL) {
-      return cached.variables;
-    }
-
-    const variables: string[] = [];
-    const variablesFiles = this.findVariablesYmlFiles(workspacePath);
-
-    for (const filePath of variablesFiles) {
-      try {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const keys = parseYamlKeys(content);
-        variables.push(...keys);
-      } catch {
-        continue;
-      }
-    }
-
-    // Deduplicate and sort
-    const uniqueVariables = [...new Set(variables)].sort();
-
-    this.cache.set(workspacePath, {
-      variables: uniqueVariables,
-      timestamp: now,
-    });
-
-    return uniqueVariables;
-  }
-
-  /**
-   * Find all _variables.yml files in the workspace.
-   */
-  private findVariablesYmlFiles(dir: string): string[] {
-    const files: string[] = [];
-
-    const scan = (currentDir: string): void => {
-      let entries: fs.Dirent[];
-      try {
-        entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      } catch {
-        return;
-      }
-
-      for (const entry of entries) {
-        const fullPath = path.join(currentDir, entry.name);
-
-        if (entry.isDirectory()) {
-          if (!VarShortcodeCompletionProvider.IGNORE_DIRS.has(entry.name)) {
-            scan(fullPath);
-          }
-        } else if (entry.isFile() && entry.name === '_variables.yml') {
-          files.push(fullPath);
+      for (const filePath of variablesFiles) {
+        const content = safeReadFile(filePath);
+        if (content) {
+          const keys = parseYamlKeys(content);
+          variables.push(...keys);
         }
       }
-    };
 
-    scan(dir);
-    return files;
+      // Deduplicate and sort
+      return [...new Set(variables)].sort();
+    });
   }
 
   /**

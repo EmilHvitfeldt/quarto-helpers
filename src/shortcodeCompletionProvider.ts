@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { CacheManager, traverseUpwards, safeReadFile } from './utils';
 
 /**
  * Built-in Quarto shortcode information.
@@ -11,23 +12,12 @@ interface ShortcodeInfo {
 }
 
 /**
- * Cache entry for shortcodes.
- */
-interface ShortcodeCacheEntry {
-  shortcodes: ShortcodeInfo[];
-  timestamp: number;
-}
-
-/**
  * Provides autocompletion for Quarto shortcodes.
  * Suggests both built-in shortcodes and custom shortcodes from extensions.
  */
 export class ShortcodeCompletionProvider implements vscode.CompletionItemProvider {
   // Cache for extension shortcodes
-  private cache = new Map<string, ShortcodeCacheEntry>();
-
-  // Cache TTL in milliseconds (5 seconds)
-  private static readonly CACHE_TTL = 5000;
+  private cache = new CacheManager<ShortcodeInfo[]>();
 
   // Built-in Quarto shortcodes
   private static readonly BUILTIN_SHORTCODES: ShortcodeInfo[] = [
@@ -54,16 +44,13 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
     const lineText = document.lineAt(position.line).text;
     const textBeforeCursor = lineText.substring(0, position.character);
 
-    // Check if we're inside a shortcode: {{< ... but not yet closed
-    // Match {{< with optional shortcode name started
+    // Check if we're inside a shortcode: {{< ...
     const shortcodeMatch = textBeforeCursor.match(/\{\{<\s*([a-zA-Z0-9_-]*)$/);
     if (!shortcodeMatch) {
       return undefined;
     }
 
     const partialName = shortcodeMatch[1];
-
-    // Get workspace folder
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
 
     // Collect all shortcodes
@@ -83,46 +70,23 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
    */
   private getExtensionShortcodes(workspacePath: string, documentPath: string): ShortcodeInfo[] {
     const cacheKey = `${workspacePath}:${documentPath}`;
-    const now = Date.now();
-    const cached = this.cache.get(cacheKey);
 
-    if (cached && (now - cached.timestamp) < ShortcodeCompletionProvider.CACHE_TTL) {
-      return cached.shortcodes;
-    }
+    return this.cache.getOrCompute(cacheKey, () => {
+      const shortcodes: ShortcodeInfo[] = [];
+      const seenExtensions = new Set<string>();
 
-    const shortcodes = this.scanExtensions(workspacePath, documentPath);
+      // Search from document directory up to workspace root
+      for (const dir of traverseUpwards(documentPath, workspacePath)) {
+        const extensionsDir = path.join(dir, '_extensions');
 
-    this.cache.set(cacheKey, {
-      shortcodes,
-      timestamp: now,
-    });
-
-    return shortcodes;
-  }
-
-  /**
-   * Scan for _extensions directories from document directory up to workspace root.
-   */
-  private scanExtensions(workspacePath: string, documentPath: string): ShortcodeInfo[] {
-    const shortcodes: ShortcodeInfo[] = [];
-    const seenExtensions = new Set<string>();
-
-    // Search from document directory up to workspace root
-    let currentDir = path.dirname(documentPath);
-    while (currentDir.startsWith(workspacePath) || currentDir === workspacePath) {
-      const extensionsDir = path.join(currentDir, '_extensions');
-
-      if (fs.existsSync(extensionsDir)) {
-        const found = this.scanExtensionsDir(extensionsDir, seenExtensions);
-        shortcodes.push(...found);
+        if (fs.existsSync(extensionsDir)) {
+          const found = this.scanExtensionsDir(extensionsDir, seenExtensions);
+          shortcodes.push(...found);
+        }
       }
 
-      const parentDir = path.dirname(currentDir);
-      if (parentDir === currentDir) break;
-      currentDir = parentDir;
-    }
-
-    return shortcodes;
+      return shortcodes;
+    });
   }
 
   /**
@@ -137,10 +101,14 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
       for (const entry of entries) {
         if (entry.isDirectory()) {
           // Check for _extension.yml in this directory
-          const extShortcodes = this.parseExtensionDir(path.join(extensionsDir, entry.name), entry.name, seenExtensions);
+          const extShortcodes = this.parseExtensionDir(
+            path.join(extensionsDir, entry.name),
+            entry.name,
+            seenExtensions
+          );
           shortcodes.push(...extShortcodes);
 
-          // Also check subdirectories (for namespaced extensions like quarto-ext/lightbox)
+          // Also check subdirectories (for namespaced extensions)
           try {
             const subEntries = fs.readdirSync(path.join(extensionsDir, entry.name), { withFileTypes: true });
             for (const subEntry of subEntries) {
@@ -172,31 +140,25 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
     const shortcodes: ShortcodeInfo[] = [];
     const extensionYmlPath = path.join(extPath, '_extension.yml');
 
-    if (!fs.existsSync(extensionYmlPath)) {
+    const content = safeReadFile(extensionYmlPath);
+    if (!content) {
       return shortcodes;
     }
 
-    try {
-      const content = fs.readFileSync(extensionYmlPath, 'utf-8');
-      const luaFiles = this.parseShortcodesFromYml(content);
+    const luaFiles = this.parseShortcodesFromYml(content);
 
-      for (const luaFile of luaFiles) {
-        // The shortcode name is typically the Lua filename without extension
-        const shortcodeName = path.basename(luaFile, '.lua');
+    for (const luaFile of luaFiles) {
+      const shortcodeName = path.basename(luaFile, '.lua');
 
-        // Skip if we've already seen this shortcode name
-        if (seenExtensions.has(shortcodeName)) {
-          continue;
-        }
-        seenExtensions.add(shortcodeName);
-
-        shortcodes.push({
-          name: shortcodeName,
-          description: `Custom shortcode from ${extName} extension`,
-        });
+      if (seenExtensions.has(shortcodeName)) {
+        continue;
       }
-    } catch {
-      // Ignore errors parsing extension
+      seenExtensions.add(shortcodeName);
+
+      shortcodes.push({
+        name: shortcodeName,
+        description: `Custom shortcode from ${extName} extension`,
+      });
     }
 
     return shortcodes;
@@ -211,10 +173,8 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
     let inShortcodesSection = false;
     let shortcodesIndent = -1;
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Check for shortcodes: key (with or without trailing content)
+    for (const line of lines) {
+      // Check for shortcodes: key
       const shortcodesMatch = line.match(/^(\s*)shortcodes:\s*$/);
       if (shortcodesMatch) {
         inShortcodesSection = true;
@@ -223,20 +183,17 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
       }
 
       if (inShortcodesSection) {
-        // Skip empty lines
         if (line.trim() === '') {
           continue;
         }
 
         const currentIndent = line.search(/\S/);
 
-        // If we hit a line with same or less indent that's not a list item, exit section
         if (currentIndent <= shortcodesIndent && !line.trim().startsWith('-')) {
           inShortcodesSection = false;
           continue;
         }
 
-        // Match list items like "- shortcode.lua" or "    - shortcode.lua"
         const match = line.match(/^\s*-\s*([a-zA-Z0-9_-]+\.lua)\s*$/);
         if (match) {
           luaFiles.push(match[1]);
@@ -255,13 +212,11 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
     const seen = new Set<string>();
 
     for (const shortcode of shortcodes) {
-      // Skip duplicates
       if (seen.has(shortcode.name)) {
         continue;
       }
       seen.add(shortcode.name);
 
-      // Filter by partial name if user has typed something
       if (partialName && !shortcode.name.toLowerCase().includes(partialName.toLowerCase())) {
         continue;
       }
@@ -271,8 +226,6 @@ export class ShortcodeCompletionProvider implements vscode.CompletionItemProvide
       item.detail = shortcode.description;
       item.sortText = shortcode.name;
       item.filterText = shortcode.name;
-
-      // Add documentation
       item.documentation = new vscode.MarkdownString(`**${shortcode.name}**\n\n${shortcode.description}`);
 
       items.push(item);
