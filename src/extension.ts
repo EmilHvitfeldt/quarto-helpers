@@ -5,6 +5,7 @@ import { IncludeShortcodeCompletionProvider } from './includeShortcodeCompletion
 import { VarShortcodeCompletionProvider } from './varShortcodeCompletionProvider';
 import { MetaShortcodeCompletionProvider } from './metaShortcodeCompletionProvider';
 import { ShortcodeCompletionProvider } from './shortcodeCompletionProvider';
+import { AbsolutePositionCompletionProvider } from './absolutePositionCompletionProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
   // Register fragment completion provider for quarto files
@@ -49,13 +50,21 @@ export function activate(context: vscode.ExtensionContext): void {
     ' '  // Trigger on space (after "meta ")
   );
 
+  // Register absolute position completion provider for quarto files
+  const absolutePositionProvider = vscode.languages.registerCompletionItemProvider(
+    { language: 'quarto', scheme: 'file' },
+    new AbsolutePositionCompletionProvider(),
+    ' '  // Trigger on space (after ".absolute ")
+  );
+
   context.subscriptions.push(
     fragmentCompletionProvider,
     sassCompletionProvider,
     shortcodeCompletionProvider,
     includeCompletionProvider,
     varCompletionProvider,
-    metaCompletionProvider
+    metaCompletionProvider,
+    absolutePositionProvider
   );
 }
 

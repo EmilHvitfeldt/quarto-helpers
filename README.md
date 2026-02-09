@@ -276,6 +276,50 @@ This will grow
 :::
 ```
 
+---
+
+### Absolute Position Autocomplete
+
+Provides autocomplete for RevealJS absolute positioning attributes inside `{.absolute }` blocks, enabling precise placement of elements on slides.
+
+#### How It Works
+
+Type `{.absolute ` and press space to get suggestions for positioning attributes:
+
+<!-- TODO: Add gif showing absolute position autocomplete -->
+
+#### Available Attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `top` | Distance from the top edge of the slide |
+| `bottom` | Distance from the bottom edge of the slide |
+| `left` | Distance from the left edge of the slide |
+| `right` | Distance from the right edge of the slide |
+| `width` | Width of the element |
+| `height` | Height of the element |
+
+#### Units
+
+Values can be specified in CSS units. Numbers without units default to pixels:
+
+- `top=100` (100 pixels)
+- `left="2em"` (2 em units)
+- `width="50%"` (50 percent)
+
+**Examples:**
+```markdown
+![](image.png){.absolute top=200 left=0 width="350" height="300"}
+
+![](image.png){.absolute bottom=50 right=50}
+
+::: {.absolute top=0 left=0 width="100%"}
+Full-width header content
+:::
+```
+
+See `examples/absolute-position/` for a working example.
+
 ## Requirements
 
 - VS Code 1.85.0 or higher

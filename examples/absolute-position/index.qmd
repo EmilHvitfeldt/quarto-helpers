@@ -1,0 +1,38 @@
+---
+title: "Absolute Position Example"
+format: revealjs
+---
+
+## Absolute Positioning Demo
+
+This slide demonstrates absolute positioning of elements.
+
+![](https://placekitten.com/350/300){.absolute top=200 left=0 width="350" height="300"}
+
+![](https://placekitten.com/450/250){.absolute top=50 right=50 width="450" height="250"}
+
+## Autocomplete Demo
+
+To try the autocomplete:
+
+1. Type `{.absolute ` inside an image or div
+2. Trigger autocomplete (Ctrl+Space or press space)
+3. You'll see suggestions for: `top`, `bottom`, `left`, `right`, `width`, `height`
+
+## Example Usage
+
+```markdown
+![image.png]{.absolute top=100 left=50 width="400"}
+
+::: {.absolute bottom=0 right=0}
+Content positioned at bottom-right
+:::
+```
+
+## Units
+
+Values can be specified in CSS units:
+
+- `top=100` (pixels, default)
+- `left="2em"` (em units)
+- `width="50%"` (percentage)

@@ -48,3 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Discovers custom shortcodes from extensions in `_extensions/` directory
   - Parses `_extension.yml` files to find shortcode definitions
   - Supports nested extension directories (e.g., `_extensions/quarto-ext/lightbox`)
+- **Absolute position autocomplete:**
+  - Autocomplete for RevealJS absolute position attributes inside `{.absolute }` blocks
+  - Suggests positioning attributes: `top`, `bottom`, `left`, `right`, `width`, `height`
+  - Filters out attributes already present in the block
+  - Includes snippet support with placeholder values
