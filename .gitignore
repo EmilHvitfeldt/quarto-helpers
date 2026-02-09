@@ -1,10 +1,33 @@
+# Dependencies
 node_modules/
+
+# Build output
 out/
 dist/
 *.vsix
-.vscode-test/
-.DS_Store
-*.log
-.env
 
-/.luarc.json
+# VS Code test directory
+.vscode-test/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+
+# Lua language server
+.luarc.json
+
+# Claude Code
+.claude/

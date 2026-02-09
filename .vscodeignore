@@ -1,16 +1,45 @@
+# Development files
 .vscode/**
 .vscode-test/**
 .github/**
+.claude/**
+
+# Dependencies (not needed in packaged extension)
 node_modules/**
-dist/**
-*.log
-src/**
-tsconfig.json
-.eslintrc.json
-.prettierrc
-CHANGELOG.md
-CONTRIBUTING.md
-examples/**
+
+# Source control
 .git/**
 .gitignore
 package-lock.json
+
+# TypeScript source (only need compiled output)
+src/**
+
+# Build artifacts (but not out/ - that's needed)
+dist/**
+*.log
+
+# Documentation (optional - remove if you want these in package)
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Config files
+.eslintrc.json
+.prettierrc
+tsconfig.json
+jsconfig.json
+.luarc.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test/**
+**/*.test.js
+
+# Examples (for development only)
+examples/**
+
+# Scripts
+scripts/**

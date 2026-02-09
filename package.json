@@ -1,30 +1,44 @@
 {
   "name": "quarto-helpers",
   "displayName": "Quarto Helpers",
-  "description": "VS Code extension providing autocomplete and editor support for Quarto documents",
-  "version": "0.0.1",
+  "description": "Autocomplete and editor support for Quarto documents (shortcodes, Sass variables, RevealJS features, and more)",
+  "version": "0.1.0",
   "publisher": "EmilHvitfeldt",
+  "author": {
+    "name": "Emil Hvitfeldt"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EmilHvitfeldt/quarto-helpers"
+  },
+  "bugs": {
+    "url": "https://github.com/EmilHvitfeldt/quarto-helpers/issues"
+  },
+  "homepage": "https://github.com/EmilHvitfeldt/quarto-helpers#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Programming Languages",
+    "Snippets",
     "Other"
+  ],
+  "keywords": [
+    "quarto",
+    "qmd",
+    "revealjs",
+    "shortcode",
+    "autocomplete",
+    "markdown",
+    "sass",
+    "presentation"
   ],
   "activationEvents": [
     "onLanguage:quarto",
     "onLanguage:scss"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "languages": [
-      {
-        "id": "quarto",
-        "extensions": [
-          ".qmd"
-        ]
-      }
-    ]
-  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -34,10 +48,19 @@
     "publish": "vsce publish",
     "publish:ovsx": "ovsx publish"
   },
+  "contributes": {
+    "languages": [
+      {
+        "id": "quarto",
+        "extensions": [".qmd"],
+        "aliases": ["Quarto", "quarto"]
+      }
+    ]
+  },
   "devDependencies": {
     "@types/node": "^20.x",
     "@types/vscode": "^1.85.0",
-    "@vscode/vsce": "^2.x",
-    "typescript": "^5.x"
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.3.0"
   }
 }
