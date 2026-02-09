@@ -170,6 +170,61 @@ See `examples/meta-shortcode/` for a working example.
 
 ---
 
+### Shortcode Name Autocomplete
+
+Provides autocomplete for shortcode names when typing `{{< >}}`. Suggests both built-in Quarto shortcodes and custom shortcodes from installed extensions.
+
+#### How It Works
+
+Type `{{< ` to get suggestions for available shortcodes:
+
+<!-- TODO: Add gif showing shortcode autocomplete -->
+
+#### Built-in Shortcodes
+
+All 12 built-in Quarto shortcodes are available:
+
+| Shortcode | Description |
+|-----------|-------------|
+| `include` | Include content from another file |
+| `var` | Output value from `_variables.yml` |
+| `meta` | Print document metadata value |
+| `env` | Retrieve environment variable value |
+| `pagebreak` | Insert a native page break |
+| `kbd` | Document keyboard shortcuts |
+| `video` | Embed a video |
+| `embed` | Include output from Jupyter notebook cells |
+| `placeholder` | Insert a placeholder image |
+| `lipsum` | Generate placeholder text |
+| `version` | Display the Quarto CLI version |
+| `contents` | Reorganize document content |
+
+#### Custom Extension Shortcodes
+
+The extension automatically discovers custom shortcodes from your project's `_extensions/` directory by parsing `_extension.yml` files.
+
+**Example extension structure:**
+```
+_extensions/
+  greeting/
+    _extension.yml
+    greeting.lua
+```
+
+**Example `_extension.yml`:**
+```yaml
+title: Greeting
+contributes:
+  shortcodes:
+    - greeting.lua
+```
+
+The `greeting` shortcode will appear in autocomplete suggestions alongside the built-in shortcodes.
+
+See `examples/shortcode/` for a working example with a custom extension.
+
+---
+
 ### Fragment Autocomplete
 
 Provides intelligent autocomplete for reveal.js fragment animation types inside `{.fragment }` spans.

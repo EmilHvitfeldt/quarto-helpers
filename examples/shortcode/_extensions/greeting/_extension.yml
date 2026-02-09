@@ -1,0 +1,6 @@
+title: Greeting
+author: Example Author
+version: 1.0.0
+contributes:
+  shortcodes:
+    - greeting.lua

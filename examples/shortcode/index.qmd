@@ -1,0 +1,37 @@
+---
+title: "Shortcode Autocomplete Example"
+format: html
+---
+
+## Built-in Shortcodes
+
+Quarto provides many built-in shortcodes. Type `{{< ` and trigger autocomplete to see them all:
+
+### Examples
+
+**Page break:**
+{{< pagebreak >}}
+
+**Placeholder image:**
+{{< placeholder 400 200 >}}
+
+**Keyboard shortcut:**
+Press {{< kbd Ctrl+S >}} to save.
+
+**Lorem ipsum text:**
+{{< lipsum 1 >}}
+
+## Custom Shortcodes from Extensions
+
+This project includes a custom `greeting` extension in `_extensions/greeting/`.
+
+**Custom greeting:**
+{{< greeting Quarto >}}
+
+## Autocomplete Demo
+
+To try the autocomplete:
+
+1. Type `{{< ` (opening shortcode syntax)
+2. Trigger autocomplete (Ctrl+Space or just type)
+3. You'll see both built-in shortcodes (`include`, `var`, `meta`, `pagebreak`, etc.) and custom shortcodes from extensions (`greeting`)

@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamically discovers available fragment classes from rendered HTML's CSS files
   - Supports standard reveal.js fragments (`fade-out`, `fade-up`, `highlight-red`, etc.)
   - Supports custom JavaScript-defined fragment types via `classList.contains()` detection
-  - Caches fragment classes for 5 seconds to improve performance
   - Multi-line brace support for complex span definitions
   - Limits to one fragment animation class per element
 - **Sass variable autocomplete:**
@@ -35,14 +34,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Lists all files in the workspace with relative paths from the current document
   - Prioritizes underscore-prefixed files (Quarto convention for include files)
   - Excludes common non-content directories (`.git`, `node_modules`, `_site`, etc.)
-  - 5-second caching for performance
 - **Var shortcode autocomplete:**
   - Autocomplete for `{{< var >}}` shortcode with variables from `_variables.yml` files
   - Supports dot notation for nested values (e.g., `author.name`, `urls.docs`)
   - Scans all `_variables.yml` files in the workspace
-  - 5-second caching for performance
 - **Meta shortcode autocomplete:**
   - Autocomplete for `{{< meta >}}` shortcode with fields from YAML front matter and `_quarto.yml`
   - Supports dot notation for nested values (e.g., `author.name`, `custom.setting`)
   - Parses front matter and `_quarto.yml` hierarchy
-  - 5-second caching for performance
+- **Shortcode name autocomplete:**
+  - Autocomplete for shortcode names inside `{{< >}}` syntax
+  - Includes all 12 built-in Quarto shortcodes (`include`, `var`, `meta`, `env`, `pagebreak`, `kbd`, `video`, `embed`, `placeholder`, `lipsum`, `version`, `contents`)
+  - Discovers custom shortcodes from extensions in `_extensions/` directory
+  - Parses `_extension.yml` files to find shortcode definitions
+  - Supports nested extension directories (e.g., `_extensions/quarto-ext/lightbox`)

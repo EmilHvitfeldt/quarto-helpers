@@ -4,6 +4,7 @@ import { SassVariableCompletionProvider } from './sassVariableCompletionProvider
 import { IncludeShortcodeCompletionProvider } from './includeShortcodeCompletionProvider';
 import { VarShortcodeCompletionProvider } from './varShortcodeCompletionProvider';
 import { MetaShortcodeCompletionProvider } from './metaShortcodeCompletionProvider';
+import { ShortcodeCompletionProvider } from './shortcodeCompletionProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
   // Register fragment completion provider for quarto files
@@ -18,6 +19,13 @@ export function activate(context: vscode.ExtensionContext): void {
     { language: 'scss', scheme: 'file' },
     new SassVariableCompletionProvider(),
     '$'  // Trigger on $ character
+  );
+
+  // Register shortcode name completion provider for quarto files
+  const shortcodeCompletionProvider = vscode.languages.registerCompletionItemProvider(
+    { language: 'quarto', scheme: 'file' },
+    new ShortcodeCompletionProvider(),
+    '<'  // Trigger on < (after "{{<")
   );
 
   // Register include shortcode completion provider for quarto files
@@ -44,6 +52,7 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     fragmentCompletionProvider,
     sassCompletionProvider,
+    shortcodeCompletionProvider,
     includeCompletionProvider,
     varCompletionProvider,
     metaCompletionProvider
