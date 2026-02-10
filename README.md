@@ -12,7 +12,7 @@ Provides intelligent autocomplete for Quarto Sass variables in `.scss` files. Th
 
 Type `$` in any `.scss` file within a Quarto project to get suggestions for available Sass variables:
 
-<!-- TODO: Add gif showing sass autocomplete -->
+![](images/sass-completion.gif)
 
 #### Format-Aware Completions
 
@@ -78,7 +78,7 @@ Provides file path autocomplete inside `{{< include >}}` shortcodes, making it e
 
 Type `{{< include ` and trigger autocomplete (or press space) to get suggestions for all files in your workspace:
 
-<!-- TODO: Add gif showing include autocomplete -->
+![](images/include-completion.gif)
 
 #### Features
 
@@ -111,7 +111,7 @@ See `examples/include-shortcode/` for a working example.
 
 Provides autocomplete for Quarto's `{{< var >}}` shortcode, which reads variables from `_variables.yml` files in your project. Type `{{< var ` to get suggestions:
 
-<!-- TODO: Add gif showing var autocomplete -->
+![](images/var-completion.gif)
 
 The extension scans all `_variables.yml` files in your workspace and suggests available variables with dot notation for nested values.
 
@@ -143,7 +143,7 @@ See `examples/var-shortcode/` for a working example.
 
 Provides autocomplete for Quarto's `{{< meta >}}` shortcode, which reads metadata from YAML front matter and `_quarto.yml` files. Type `{{< meta ` to get suggestions:
 
-<!-- TODO: Add gif showing meta autocomplete -->
+![](images/meta-completion.gif)
 
 The extension parses:
 - The current document's YAML front matter
@@ -178,7 +178,7 @@ Provides autocomplete for shortcode names when typing `{{< >}}`. Suggests both b
 
 Type `{{< ` to get suggestions for available shortcodes:
 
-<!-- TODO: Add gif showing shortcode autocomplete -->
+![](images/shortcode-completion.gif)
 
 #### Built-in Shortcodes
 
@@ -233,7 +233,7 @@ Provides intelligent autocomplete for reveal.js fragment animation types inside 
 
 Type inside a `{.fragment }` span and press space to get suggestions for available fragment animation types:
 
-<!-- TODO: Add gif showing fragment autocomplete -->
+![](images/fragments-completion.gif)
 
 #### Dynamic Discovery
 
@@ -286,7 +286,7 @@ Provides autocomplete for RevealJS absolute positioning attributes inside `{.abs
 
 Type `{.absolute ` and press space to get suggestions for positioning attributes:
 
-<!-- TODO: Add gif showing absolute position autocomplete -->
+![](images/aboslute-completion.gif)
 
 #### Available Attributes
 
