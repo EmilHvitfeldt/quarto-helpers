@@ -55,7 +55,47 @@
         "extensions": [".qmd"],
         "aliases": ["Quarto", "quarto"]
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Quarto Helpers",
+      "properties": {
+        "quartoHelpers.enableSassVariableCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Sass variable autocomplete in .scss files"
+        },
+        "quartoHelpers.enableIncludeShortcodeCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable file path autocomplete for {{< include >}} shortcodes"
+        },
+        "quartoHelpers.enableVarShortcodeCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable variable autocomplete for {{< var >}} shortcodes"
+        },
+        "quartoHelpers.enableMetaShortcodeCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable metadata autocomplete for {{< meta >}} shortcodes"
+        },
+        "quartoHelpers.enableShortcodeCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable shortcode name autocomplete for {{< >}} syntax"
+        },
+        "quartoHelpers.enableFragmentCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable fragment animation autocomplete for RevealJS presentations"
+        },
+        "quartoHelpers.enableAbsolutePositionCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable absolute positioning attribute autocomplete for RevealJS"
+        }
+      }
+    }
   },
   "devDependencies": {
     "@types/node": "^20.x",

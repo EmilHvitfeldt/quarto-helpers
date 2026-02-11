@@ -320,6 +320,30 @@ Full-width header content
 
 See `examples/absolute-position/` for a working example.
 
+## Configuration
+
+Each feature can be individually enabled or disabled through VS Code settings. All features are enabled by default.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `quartoHelpers.enableSassVariableCompletion` | Enable Sass variable autocomplete in .scss files | `true` |
+| `quartoHelpers.enableIncludeShortcodeCompletion` | Enable file path autocomplete for `{{< include >}}` shortcodes | `true` |
+| `quartoHelpers.enableVarShortcodeCompletion` | Enable variable autocomplete for `{{< var >}}` shortcodes | `true` |
+| `quartoHelpers.enableMetaShortcodeCompletion` | Enable metadata autocomplete for `{{< meta >}}` shortcodes | `true` |
+| `quartoHelpers.enableShortcodeCompletion` | Enable shortcode name autocomplete for `{{< >}}` syntax | `true` |
+| `quartoHelpers.enableFragmentCompletion` | Enable fragment animation autocomplete for RevealJS presentations | `true` |
+| `quartoHelpers.enableAbsolutePositionCompletion` | Enable absolute positioning attribute autocomplete for RevealJS | `true` |
+
+To change a setting, open VS Code settings (Ctrl+, / Cmd+,) and search for "Quarto Helpers", or add to your `settings.json`:
+
+```json
+{
+  "quartoHelpers.enableFragmentCompletion": false
+}
+```
+
+**Note:** Changes to these settings require reloading VS Code to take effect.
+
 ## Requirements
 
 - VS Code 1.85.0 or higher
