@@ -94,6 +94,11 @@
           "type": "boolean",
           "default": true,
           "description": "Enable absolute positioning attribute autocomplete for RevealJS"
+        },
+        "quartoHelpers.enableStyleCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CSS property autocomplete inside style=\"\" attributes"
         }
       }
     }

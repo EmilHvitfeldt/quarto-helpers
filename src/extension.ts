@@ -6,6 +6,7 @@ import { VarShortcodeCompletionProvider } from './varShortcodeCompletionProvider
 import { MetaShortcodeCompletionProvider } from './metaShortcodeCompletionProvider';
 import { ShortcodeCompletionProvider } from './shortcodeCompletionProvider';
 import { AbsolutePositionCompletionProvider } from './absolutePositionCompletionProvider';
+import { StyleCompletionProvider } from './styleCompletionProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
   const config = vscode.workspace.getConfiguration('quartoHelpers');
@@ -78,6 +79,16 @@ export function activate(context: vscode.ExtensionContext): void {
       ' '  // Trigger on space (after ".absolute ")
     );
     context.subscriptions.push(absolutePositionProvider);
+  }
+
+  // Register style completion provider for quarto files
+  if (config.get<boolean>('enableStyleCompletion', true)) {
+    const styleCompletionProvider = vscode.languages.registerCompletionItemProvider(
+      { language: 'quarto', scheme: 'file' },
+      new StyleCompletionProvider(),
+      '"', ';', ' '  // Trigger on quote, semicolon, and space
+    );
+    context.subscriptions.push(styleCompletionProvider);
   }
 }
 

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Style attribute autocomplete:**
+  - Autocomplete for CSS properties inside `style=""` attributes within curly braces
+  - Suggests 100+ common CSS properties organized by category (colors, typography, box model, flexbox, grid, positioning, etc.)
+  - Provides value suggestions for properties after typing the colon
+  - Filters out properties already present in the style attribute
+  - Snippet support with cursor positioning for values
+
 ## [0.1.0] - YYYY-MM-DD
 
 ### Added

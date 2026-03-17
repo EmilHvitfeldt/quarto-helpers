@@ -1,0 +1,30 @@
+---
+title: "Style Attribute Demo"
+format: revealjs
+---
+
+## Basic Style Example
+
+::: {.r-fit-text style="color: red;"}
+This text is red
+:::
+
+## Multiple Properties
+
+::: {style="font-size: 2em; font-weight: bold; text-align: center;"}
+Styled content
+:::
+
+## Image with Style
+
+![](image.png){style="border: 2px solid black; border-radius: 10px;"}
+
+## Inline Style
+
+[Highlighted text]{style="background-color: yellow; padding: 0.2em;"}
+
+## Complex Styling
+
+::: {.fragment style="opacity: 0.8; transform: scale(1.1);"}
+Animated and styled
+:::

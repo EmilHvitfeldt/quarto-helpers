@@ -320,6 +320,51 @@ Full-width header content
 
 See `examples/absolute-position/` for a working example.
 
+---
+
+### Style Attribute Autocomplete
+
+Provides autocomplete for CSS properties inside `style=""` attributes within Quarto's curly brace syntax.
+
+#### How It Works
+
+Type inside a `style=""` attribute to get suggestions for CSS properties:
+
+![](images/style-completion.gif)
+
+#### Property Categories
+
+- **Colors**: `color`, `background-color`, `opacity`
+- **Typography**: `font-size`, `font-weight`, `text-align`, `line-height`, etc.
+- **Box Model**: `margin`, `padding`, `border`, `border-radius`
+- **Size**: `width`, `height`, `max-width`, `min-height`
+- **Display & Layout**: `display`, `visibility`, `overflow`
+- **Flexbox**: `flex-direction`, `justify-content`, `align-items`, `gap`
+- **Grid**: `grid-template-columns`, `grid-row`
+- **Positioning**: `position`, `top`, `left`, `z-index`
+- **Transform & Animation**: `transform`, `transition`, `animation`
+- **Other**: `cursor`, `box-shadow`, `filter`, `object-fit`
+
+#### Features
+
+- **Property autocomplete**: Suggests CSS properties with descriptions
+- **Value autocomplete**: After typing a property and `:`, suggests common values
+- **Smart filtering**: Properties already in use won't appear again
+- **Snippet support**: Inserts `property: ;` with cursor positioned for the value
+
+**Examples:**
+```markdown
+::: {.r-fit-text style="color: red; font-size: 2em;"}
+Large red text
+:::
+
+![](image.png){style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"}
+
+[Highlighted]{style="background-color: yellow; padding: 0.2em;"}
+```
+
+See `examples/style/` for a working example.
+
 ## Configuration
 
 Each feature can be individually enabled or disabled through VS Code settings. All features are enabled by default.
@@ -333,6 +378,7 @@ Each feature can be individually enabled or disabled through VS Code settings. A
 | `quartoHelpers.enableShortcodeCompletion` | Enable shortcode name autocomplete for `{{< >}}` syntax | `true` |
 | `quartoHelpers.enableFragmentCompletion` | Enable fragment animation autocomplete for RevealJS presentations | `true` |
 | `quartoHelpers.enableAbsolutePositionCompletion` | Enable absolute positioning attribute autocomplete for RevealJS | `true` |
+| `quartoHelpers.enableStyleCompletion` | Enable CSS property autocomplete inside `style=""` attributes | `true` |
 
 To change a setting, open VS Code settings (Ctrl+, / Cmd+,) and search for "Quarto Helpers", or add to your `settings.json`:
 
