@@ -2,7 +2,7 @@
   "name": "quarto-helpers",
   "displayName": "Quarto Helpers",
   "description": "Autocomplete and editor support for Quarto documents (shortcodes, Sass variables, RevealJS features, and more)",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "EmilHvitfeldt",
   "author": {
     "name": "Emil Hvitfeldt"

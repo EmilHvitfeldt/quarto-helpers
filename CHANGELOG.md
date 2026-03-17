@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-17
+
 ### Added
 
 - **Style attribute autocomplete:**
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Filters out properties already present in the style attribute
   - Snippet support with cursor positioning for values
 
-## [0.1.0] - YYYY-MM-DD
+## [0.1.0] - 2026-03-17
 
 ### Added
 
